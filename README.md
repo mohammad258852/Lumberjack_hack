@@ -1,6 +1,8 @@
 # LumberJack Hach
 LumberJack is a game in telegram. this code can play this game and get a good score
 
+![screenshot](images/screenshot.png)
+
 ## how to run
 1. install java and git
 2. clone this repository
