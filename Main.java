@@ -2,63 +2,52 @@ import java.awt.Robot;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.WindowConstants;
-
-import java.awt.image.BufferedImage;
-import java.awt.BorderLayout;
-
-
-
 public class Main{
     private static Robot robot;
-
+    //color of brown tree
     private static final Color brownColor = new Color(166,117,51);
-    private static final int leftX = 630;
-    private static final int leftY = 360;
-    private static final int rightX = 740;
-    private static final int rightY = 360;
-    private static final int delay = 30;
-    private static final int secondDelay = 180;
-    private static int[] next = new int[3];
+    //delay between two consequtive key press
+    private static final int delay = 18;
+    //delay between each group of trees
+    private static final int secondDelay = 225;
+    //number of trees in each group
+    private static final int TreeCount = 5;
+    //array to be fill
+    private static int[] next = new int[TreeCount];
+    //Y coordinate of each tree in group
+    private static final int[] locationY = {497,430,362,297,230,162};
+    //X coordinate of each left tree in group
+    private static final int locationX = 640;
+    //excpected score
+    private static final int score = 1000;
 
-    private static JFrame frame;
-    private static JLabel label;
-    public static void display(BufferedImage image){
-        if(frame==null){
-            frame=new JFrame();
-            frame.setTitle("stained_image");
-            frame.setSize(image.getWidth(), image.getHeight());
-            frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-            label=new JLabel();
-            label.setIcon(new ImageIcon(image));
-            frame.getContentPane().add(label,BorderLayout.CENTER);
-            frame.setLocationRelativeTo(null);
-            frame.pack();
-            frame.setVisible(true);
-        }else 
-            label.setIcon(new ImageIcon(image));
+
+    private static void pressLeft(){
+        robot.keyPress(KeyEvent.VK_LEFT);
+        robot.keyRelease(KeyEvent.VK_LEFT);
+        robot.delay(delay);
+        robot.keyPress(KeyEvent.VK_LEFT);
+        robot.keyRelease(KeyEvent.VK_LEFT);
     }
 
-    private static boolean checkLeft(){
-        Color color = robot.getPixelColor(leftX, leftY);
+    private static void pressRight(){
+        robot.keyPress(KeyEvent.VK_RIGHT);
+        robot.keyRelease(KeyEvent.VK_RIGHT);
+        robot.delay(delay);
+        robot.keyPress(KeyEvent.VK_RIGHT);
+        robot.keyRelease(KeyEvent.VK_RIGHT);
+    }
+
+    //return true if there is a tree in (x,y)
+    private static boolean check(int x,int y){
+        Color color = robot.getPixelColor(x, y);
         return color.getRGB()==brownColor.getRGB();
     }
 
-    private static boolean checkRight(){
-        Color color = robot.getPixelColor(rightX,rightY);
-        return color.getRGB()==brownColor.getRGB();
-    }
-
-    private static void press(int keycode){
-        robot.keyPress(keycode);
-        robot.keyRelease(keycode);
-    }
-
+    //fill next array. if there is a tree in left then next[i] would be 1 otherwise 0
     private static void getThreeNextMove(){
-        
+        for(int i=0;i<TreeCount;i++)
+            next[i] = check(locationX,locationY[i])?1:0;
     }
 
     public static void main(String[] args){
@@ -70,20 +59,20 @@ public class Main{
         }
         robot.delay(2000);
 
-        int score = 700;
+        robot.keyPress(KeyEvent.VK_SPACE);
+        robot.keyRelease(KeyEvent.VK_SPACE);
+        //in first two moves there is no tree
+        pressLeft();
+        robot.delay(secondDelay);
 
-        for(int i=0;i<score/6;i++){
+        for(int i=0;i<score/(2*TreeCount);i++){
             getThreeNextMove();
             for(int j:next){
                 if(j==0){
-                    press(KeyEvent.VK_LEFT);
-                    robot.delay(delay);
-                    press(KeyEvent.VK_LEFT);
+                    pressLeft();
                 }
                 else{
-                    press(KeyEvent.VK_RIGHT);
-                    robot.delay(delay);
-                    press(KeyEvent.VK_RIGHT);
+                    pressRight();
                 }
             }
             robot.delay(secondDelay);
