@@ -5,7 +5,7 @@ LumberJack is a game in telegram. this code can play this game and get a good sc
 1. install java and git
 2. clone this repository
 ```
-git clone 
+git clone https://github.com/mohammad258852/Lumberjack_hack
 ```
 3. open the game in browser run and press left arrow key two times. then get an screenshot
 4. set the variables acording to the screenshot
